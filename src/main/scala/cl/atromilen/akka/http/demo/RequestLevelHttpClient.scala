@@ -4,12 +4,14 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpRequest
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success}
 
 class RequestLevelHttpClient {
+  val logger = LoggerFactory.getLogger(getClass)
   implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
   implicit val executionContext = system.executionContext
 
@@ -21,8 +23,8 @@ class RequestLevelHttpClient {
 
     responseFuture.
       onComplete {
-        case Success(value) => println(value)
-        case Failure(exception) => sys.error("something wrong")
+        case Success(value) => logger.info(value)
+        case Failure(exception) => logger.error("something wrong")
       }
   }
 }
